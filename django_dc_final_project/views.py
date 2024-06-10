@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from collections import defaultdict
-from statistics import median, stdev
 
 from django.views.generic.base import TemplateView
 
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.db.models import Avg, Count
-from django.shortcuts import render, redirect
+from django.db.models import Avg
 
 from .models import Student, Subject, Score
 from .forms import StudentForm, SubjectForm, ScoreForm
@@ -29,7 +27,7 @@ class IndexView(TemplateView):
         score_statistics = [
             {
                 'subject': subject,
-                'avg_score': f'{scores.filter(subject__name=subject).aggregate(Avg("value"))["value__avg"]:.1f}',
+                'avg_score': f'{scores.filter(subject__name=subject).aggregate(Avg("value"))["value__avg"] or 0:.1f}',
             }
             for subject in subjects
         ]
@@ -69,6 +67,13 @@ class StudentCreateView(CreateView):
     template_name = 'student_form.html'
     success_url = reverse_lazy('index')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        subjects = Subject.objects.all()
+        for subject in subjects:
+            Score.objects.create(student=self.object, subject=subject, value=0)
+        return response
+
 
 class StudentUpdateView(UpdateView):
     model = Student
@@ -88,6 +93,13 @@ class SubjectCreateView(CreateView):
     form_class = SubjectForm
     template_name = 'subject_form.html'
     success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        students = Student.objects.all()
+        for student in students:
+            Score.objects.create(student=student, subject=self.object, value=0)
+        return response
 
 
 class SubjectUpdateView(UpdateView):

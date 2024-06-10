@@ -43,11 +43,45 @@
                     </tr>
                 </tbody>
             </table>
+            <h2>Лучший студент</h2>
+            {% if best_student %}
+                <p>{{ best_student.student.fio }} со средним баллом {{ best_student.avg_score }}</p>
+            {% else %}
+                <p>Нет данных</p>
+            {% endif %}
+            <h2>Худший студент</h2>
+            {% if worst_student %}
+                <p>{{ worst_student.student.fio }} со средним баллом {{ worst_student.avg_score }}</p>
+            {% else %}
+                <p>Нет данных</p>
+            {% endif %}
+            <h2>Управление</h2>
+                <ul>
+                    <li><a href="{% url 'student_add' %}">Добавить студента</a></li>
+                    <li><a href="{% url 'subject_add' %}">Добавить предмет</a></li>
+                    <li><a href="{% url 'score_add' %}">Добавить оценку</a></li>
+                </ul>
+            <h2>Редактирование и удаление</h2>
+            <h3>Студенты</h3>
+                <ul>
+                    {% for student in students %}
+                        <li>{{ student.name }} - <a href="{% url 'student_edit' student.pk %}">Редактировать</a> | <a href="{% url 'student_delete' student.pk %}">Удалить</a></li>
+                    {% endfor %}
+                </ul>
 
-            <h4 style="text-align:center;">Студент с наивысшим средним баллом</h4>
+            <h3>Предметы</h3>
+                <ul>
+                    {% for subject in subjects %}
+                        <li>{{ subject.name }} - <a href="{% url 'subject_edit' subject.pk %}">Редактировать</a> | <a href="{% url 'subject_delete' subject.pk %}">Удалить</a></li>
+                    {% endfor %}
+                </ul>
 
-            <h4 style="text-align:center;">Студент с самым низким средним баллом</h4>
-
+            <h3>Оценки</h3>
+                <ul>
+                    {% for score in scores %}
+                        <li>{{ score.student.name }} - {{ score.subject }}: {{ score.value|floatformat:1 }} - <a href="{% url 'score_edit' score.pk %}">Редактировать</a> | <a href="{% url 'score_delete' score.pk %}">Удалить</a></li>
+                    {% endfor %}
+                </ul>
         </div>
 	</body>
 </html>

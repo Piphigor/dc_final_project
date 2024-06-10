@@ -1,4 +1,4 @@
-# django-primer
+# django-dc-final-project
 
 How to install
 ------------  

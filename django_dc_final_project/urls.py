@@ -16,9 +16,23 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from .views import IndexView
+from .views import (
+    IndexView,
+    StudentCreateView, StudentUpdateView, StudentDeleteView,
+    SubjectCreateView, SubjectUpdateView, SubjectDeleteView,
+    ScoreCreateView, ScoreUpdateView, ScoreDeleteView
+)
 
 urlpatterns = [
-    path('', IndexView.as_view()),
-    path('admin/', admin.site.urls),
+    path('', IndexView.as_view(), name='index'),
+    path('admin/', admin.site.urls, name='admin'),
+    path('student/add/', StudentCreateView.as_view(), name='student_add'),
+    path('student/<int:pk>/edit/', StudentUpdateView.as_view(), name='student_edit'),
+    path('student/<int:pk>/delete/', StudentDeleteView.as_view(), name='student_delete'),
+    path('subject/add/', SubjectCreateView.as_view(), name='subject_add'),
+    path('subject/<int:pk>/edit/', SubjectUpdateView.as_view(), name='subject_edit'),
+    path('subject/<int:pk>/delete/', SubjectDeleteView.as_view(), name='subject_delete'),
+    path('score/add/', ScoreCreateView.as_view(), name='score_add'),
+    path('score/<int:pk>/edit/', ScoreUpdateView.as_view(), name='score_edit'),
+    path('score/<int:pk>/delete/', ScoreDeleteView.as_view(), name='score_delete'),
 ]
